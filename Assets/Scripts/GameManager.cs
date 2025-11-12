@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour, InputSystem_Actions.IUIActions
+public class GameManager : MonoBehaviour
 {
     
     private enum GameState
@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour, InputSystem_Actions.IUIActions
         Gameplay
     }
 
-    private InputSystem_Actions _input;
+    [SerializeField] private PlayerInput _input;
     [Header("Cameras")]
     
     [SerializeField] private Camera _UICamera;
@@ -43,8 +43,12 @@ public class GameManager : MonoBehaviour, InputSystem_Actions.IUIActions
 
     private void Awake()
     {
-        _input = new InputSystem_Actions();
-        _input.UI.SetCallbacks(this);
+        _input.actions["GoToMainMenu"].started += CancelOnstarted;
+    }
+
+    private void CancelOnstarted(InputAction.CallbackContext callback)
+    {
+        ShowMainMenu();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -97,18 +101,5 @@ public class GameManager : MonoBehaviour, InputSystem_Actions.IUIActions
         #else
         Application.Quit();
         #endif
-    }
-
-    public void OnNavigate(InputAction.CallbackContext context)
-    {
-    }
-
-    public void OnSubmit(InputAction.CallbackContext context)
-    {
-    }
-
-    public void OnCancel(InputAction.CallbackContext context)
-    {
-        ShowMainMenu();
     }
 }
