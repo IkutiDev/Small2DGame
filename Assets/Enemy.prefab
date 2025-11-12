@@ -136,9 +136,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7647ce2ff358674d94e29ddf2e0c546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
-  _rigidbody2D: {fileID: 0}
   _movementSpeed: 3
-  _rangeToPlayerToFlee: 7
+  _rangeToPlayerToFlee: 2
 --- !u!1 &3202384320983037304
 GameObject:
   m_ObjectHideFlags: 0

@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour
         
         _settingsButton.onClick.AddListener(ShowSettingsMenu);
         
-        ShowGame();
+        ShowMainMenu();
 
     }
 
@@ -90,6 +90,7 @@ public class GameManager : MonoBehaviour
     private void ShowGame()
     {
         SpawnEnemies();
+        _playerInstance.transform.position = Vector3.zero;
         _currentGameState = GameState.Gameplay;
         UpdateCameras();
     }
@@ -98,7 +99,7 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < _spawnedEnemies.Count; i++)
         {
-            Destroy(_spawnedEnemies[i]);
+            Destroy(_spawnedEnemies[i].gameObject);
         }
         _spawnedEnemies.Clear();
     }
@@ -109,7 +110,7 @@ public class GameManager : MonoBehaviour
         {
             Vector2 randomPoint = new(Random.Range(0f, 1f), Random.Range(0f, 1f));
             Vector2 enemyPosition = Camera.main.ViewportToWorldPoint(randomPoint);
-            var enemyInstance = Instantiate(_enemyPrefab, enemyPosition, Quaternion.identity);
+            var enemyInstance = Instantiate(_enemyPrefab, enemyPosition, Quaternion.identity, _GameCamera.transform);
             _spawnedEnemies.Add(enemyInstance);
         }
     }
