@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,6 +14,8 @@ public class GameManager : MonoBehaviour
         MainMenu,
         Gameplay
     }
+
+    private const int ENEMY_COUNT = 1000;
 
     [SerializeField] private PlayerInput _input;
     [Header("Cameras")]
@@ -38,8 +42,15 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Button _exitSettingsButton;
 
+    [Header("Gameplay")] 
+    [SerializeField] private PlayerController _playerInstance;
+
+    [SerializeField] private EnemyController _enemyPrefab;
+
 
     private GameState _currentGameState = GameState.MainMenu;
+
+    private List<EnemyController> _spawnedEnemies = new List<EnemyController>();
 
     private void Awake()
     {
@@ -62,12 +73,13 @@ public class GameManager : MonoBehaviour
         
         _settingsButton.onClick.AddListener(ShowSettingsMenu);
         
-        ShowMainMenu();
+        ShowGame();
 
     }
 
     private void ShowMainMenu()
     {
+        ClearEnemies();
         _eventSystem.SetSelectedGameObject(_playGameButton.gameObject);
         _currentGameState = GameState.MainMenu;
         UpdateCameras();
@@ -77,10 +89,31 @@ public class GameManager : MonoBehaviour
 
     private void ShowGame()
     {
+        SpawnEnemies();
         _currentGameState = GameState.Gameplay;
         UpdateCameras();
     }
 
+    private void ClearEnemies()
+    {
+        for (int i = 0; i < _spawnedEnemies.Count; i++)
+        {
+            Destroy(_spawnedEnemies[i]);
+        }
+        _spawnedEnemies.Clear();
+    }
+
+    private void SpawnEnemies()
+    {
+        for (int i = 0; i < ENEMY_COUNT; i++)
+        {
+            Vector2 randomPoint = new(Random.Range(0f, 1f), Random.Range(0f, 1f));
+            Vector2 enemyPosition = Camera.main.ViewportToWorldPoint(randomPoint);
+            var enemyInstance = Instantiate(_enemyPrefab, enemyPosition, Quaternion.identity);
+            _spawnedEnemies.Add(enemyInstance);
+        }
+    }
+    
     private void UpdateCameras()
     {
         _UICamera.gameObject.SetActive(_currentGameState == GameState.MainMenu);
